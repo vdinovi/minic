@@ -1,0 +1,33 @@
+#!/bin/bash
+declare -a exclude=()
+
+if [ "$1" = "unit" ]; then
+    dir="./unit"
+elif [ "$1" = "integration" ]; then
+    dir="./benchmarks"
+elif [ "$1" = "benchmarks" ]; then
+    dir="./benchmarks"
+else
+    echo "unknown dir $1"
+    exit
+fi
+
+for file in $dir/*.s; do
+    filename=$(basename "${file}")
+    if [[ ! " ${exclude[@]} " =~ "${filename}" ]]; then
+        input="$dir/input/$(basename "$file" .s).input"
+        output="$dir/output/$(basename "$file" .s).output"
+        if [ -f a.out ]; then
+            rm a.out
+        fi
+        gcc $file
+        ./a.out <$input >result
+        if diff -q result $output &>/dev/null; then
+            echo -e "--- \e[32mOK\e[0m --- Passed ${filename}"
+        else
+            echo -e "-- \e[31mFAIL\e[0m -- Failed ${filename}"
+        fi
+    else
+        echo -e "-- \e[33mSKIP\e[0m -- Skipped $filename"
+    fi
+done

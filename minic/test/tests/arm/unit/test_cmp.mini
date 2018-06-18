@@ -1,0 +1,300 @@
+struct A 
+{
+    bool b;
+    int i;
+    struct A a;
+};
+
+fun printBool(bool b, bool lb) void
+{
+    if (b) {
+        if (lb) {
+            print 1 endl;
+        } else {
+            print 1;
+        }
+
+    } else {
+        if (lb) {
+            print 0 endl;
+        } else {
+            print 0;
+        }
+    }
+}
+
+# Expected output
+# eq c:    1 1 1 1 0 0 0 0 0 0 0 0 0 0
+# ne c:    0 0 0 0 1 1 1 1 1 1 1 1 1 1
+# lt c:    0 0 0 0 0 1 1 0 1 0 0 1 0 1
+# lte c:   1 1 1 1 0 1 1 0 1 0 0 1 0 1
+# gt c:    0 0 0 0 1 0 0 1 0 1 1 0 1 0
+# gte c:   1 1 1 1 1 0 0 1 0 1 1 0 1 0
+# eq xc:   1 0 0 1 0 0 0 1 0 0 1 0 0 0 1 0 0 1
+# ne xc:   0 1 1 0 1 1 1 0 1 1 0 1 1 1 0 1 1 0
+# lt xc:   0 1 0 0 0 1 0 0 0 1 0 1 1 1 0 0 0 0
+# lte xc:  1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 1
+# gt xc:   0 0 10 1 0 1 0 1 0 0 0 0 0 0 1 1 0
+# gte xc: 1 0 1 1 1 0 1 1 1 0 1 0 0 0 1 1 1 1
+# complex: 0 1 1 1 0 0 0 1 0 0 1 1
+
+fun main() int
+{
+    struct A s;
+    int i, j;
+    bool b;
+
+    # eq c: 1 1 1 1 0 0 0 0 0 0 0 0 0 0
+    printBool(0 == 0, false);
+    printBool(1 == 1, false);
+    printBool(-1 == -1, false);
+    printBool(2 == 2, false);
+    printBool(1 == 0, false);
+    printBool(0 == 1, false);
+    printBool(-1 == 0, false);
+    printBool(0 == -1, false);
+    printBool(-1 == 1, false);
+    printBool(1 == -1, false);
+    printBool(2 == 0, false);
+    printBool(0 == 2, false);
+    printBool(2 == 1, false);
+    printBool(1 == 2, true);
+
+    # ne c: 0 0 0 0 1 1 1 1 1 1 1 1 1 1
+    printBool(0 != 0, false);
+    printBool(1 != 1, false);
+    printBool(-1 != -1, false);
+    printBool(2 != 2, false);
+    printBool(1 != 0, false);
+    printBool(0 != 1, false);
+    printBool(-1 != 0, false);
+    printBool(0 != -1, false);
+    printBool(-1 != 1, false);
+    printBool(1 != -1, false);
+    printBool(2 != 0, false);
+    printBool(0 != 2, false);
+    printBool(2 != 1, false);
+    printBool(1 != 2, true);
+
+    # lt c: 0 0 0 0 0 1 1 0 1 0 0 1 0 1
+    printBool(0 < 0, false);
+    printBool(1 < 1, false);
+    printBool(-1 < -1, false);
+    printBool(2 < 2, false);
+    printBool(1 < 0, false);
+    printBool(0 < 1, false);
+    printBool(-1 < 0, false);
+    printBool(0 < -1, false);
+    printBool(-1 < 1, false);
+    printBool(1 < -1, false);
+    printBool(2 < 0, false);
+    printBool(0 < 2, false);
+    printBool(2 < 1, false);
+    printBool(1 < 2, true);
+
+    # lte c: 1 1 1 1 0 1 1 0 1 0 0 1 0 1
+    printBool(0 <= 0, false);
+    printBool(1 <= 1, false);
+    printBool(-1 <= -1, false);
+    printBool(2 <= 2, false);
+    printBool(1 <= 0, false);
+    printBool(0 <= 1, false);
+    printBool(-1 <= 0, false);
+    printBool(0 <= -1, false);
+    printBool(-1 <= 1, false);
+    printBool(1 <= -1, false);
+    printBool(2 <= 0, false);
+    printBool(0 <= 2, false);
+    printBool(2 <= 1, false);
+    printBool(1 <= 2, true);
+
+    # gt c: 0 0 0 0 1 0 0 1 0 1 1 0 1 0
+    printBool(0 > 0, false);
+    printBool(1 > 1, false);
+    printBool(-1 > -1, false);
+    printBool(2 > 2, false);
+    printBool(1 > 0, false);
+    printBool(0 > 1, false);
+    printBool(-1 > 0, false);
+    printBool(0 > -1, false);
+    printBool(-1 > 1, false);
+    printBool(1 > -1, false);
+    printBool(2 > 0, false);
+    printBool(0 > 2, false);
+    printBool(2 > 1, false);
+    printBool(1 > 2, true);
+
+    # gte c: 1 1 1 1 1 0 0 1 0 1 1 0 1 0
+    printBool(0 >= 0, false);
+    printBool(1 >= 1, false);
+    printBool(-1 >= -1, false);
+    printBool(2 >= 2, false);
+    printBool(1 >= 0, false);
+    printBool(0 >= 1, false);
+    printBool(-1 >= 0, false);
+    printBool(0 >= -1, false);
+    printBool(-1 >= 1, false);
+    printBool(1 >= -1, false);
+    printBool(2 >= 0, false);
+    printBool(0 >= 2, false);
+    printBool(2 >= 1, false);
+    printBool(1 >= 2, true);
+
+    # eq xc: 1 0 0 1 0 0 0 1 0 0 1 0 0 0 1 0 0 1
+    i = 0;
+    printBool(i == 0, false);
+    printBool(i == 1, false);
+    printBool(i == -1, false);
+    printBool(0 == i, false);
+    printBool(1 == i, false);
+    printBool(-1 == i, false);
+    i = 1;
+    printBool(i == 0, false);
+    printBool(i == 1, false);
+    printBool(i == -1, false);
+    printBool(0 == i, false);
+    printBool(1 == i, false);
+    printBool(-1 == i, false);
+     i = -1;
+    printBool(i == 0, false);
+    printBool(i == 1, false);
+    printBool(i == -1, false);
+    printBool(0 == i, false);
+    printBool(1 == i, false);
+    printBool(-1 == i, true);
+ 
+    # ne xc: 0 1 1 0 1 1 1 0 1 1 0 1 1 1 0 1 1 0
+    i = 0;
+    printBool(i != 0, false);
+    printBool(i != 1, false);
+    printBool(i != -1, false);
+    printBool(0 != i, false);
+    printBool(1 != i, false);
+    printBool(-1 != i, false);
+    i = 1;
+    printBool(i != 0, false);
+    printBool(i != 1, false);
+    printBool(i != -1, false);
+    printBool(0 != i, false);
+    printBool(1 != i, false);
+    printBool(-1 != i, false);
+     i = -1;
+    printBool(i != 0, false);
+    printBool(i != 1, false);
+    printBool(i != -1, false);
+    printBool(0 != i, false);
+    printBool(1 != i, false);
+    printBool(-1 != i, true);
+
+    # lt xc: 0 1 0 0 0 1 0 0 0 1 0 1 1 1 0 0 0 0
+    i = 0;
+    printBool(i < 0, false);
+    printBool(i < 1, false);
+    printBool(i < -1, false);
+    printBool(0 < i, false);
+    printBool(1 < i, false);
+    printBool(-1 < i, false);
+    i = 1;
+    printBool(i < 0, false);
+    printBool(i < 1, false);
+    printBool(i < -1, false);
+    printBool(0 < i, false);
+    printBool(1 < i, false);
+    printBool(-1 < i, false);
+     i = -1;
+    printBool(i < 0, false);
+    printBool(i < 1, false);
+    printBool(i < -1, false);
+    printBool(0 < i, false);
+    printBool(1 < i, false);
+    printBool(-1 < i, true);
+ 
+    # lte xc: 1 1 0 1 0 1 0 1 0 1 1 1 1 1 1 0 0 1
+    i = 0;
+    printBool(i <= 0, false);
+    printBool(i <= 1, false);
+    printBool(i <= -1, false);
+    printBool(0 <= i, false);
+    printBool(1 <= i, false);
+    printBool(-1 <= i, false);
+    i = 1;
+    printBool(i <= 0, false);
+    printBool(i <= 1, false);
+    printBool(i <= -1, false);
+    printBool(0 <= i, false);
+    printBool(1 <= i, false);
+    printBool(-1 <= i, false);
+     i = -1;
+    printBool(i <= 0, false);
+    printBool(i <= 1, false);
+    printBool(i <= -1, false);
+    printBool(0 <= i, false);
+    printBool(1 <= i, false);
+    printBool(-1 <= i, true);
+ 
+    # gt xc: 0 0 10 1 0 1 0 1 0 0 0 0 0 0 1 1 0
+    i = 0;
+    printBool(i > 0, false);
+    printBool(i > 1, false);
+    printBool(i > -1, false);
+    printBool(0 > i, false);
+    printBool(1 > i, false);
+    printBool(-1 > i, false);
+    i = 1;
+    printBool(i > 0, false);
+    printBool(i > 1, false);
+    printBool(i > -1, false);
+    printBool(0 > i, false);
+    printBool(1 > i, false);
+    printBool(-1 > i, false);
+     i = -1;
+    printBool(i > 0, false);
+    printBool(i > 1, false);
+    printBool(i > -1, false);
+    printBool(0 > i, false);
+    printBool(1 > i, false);
+    printBool(-1 > i, true);
+ 
+    # gte xc: 1 0 1 1 1 0 1 1 1 0 1 0 0 0 1 1 1 1
+    i = 0;
+    printBool(i >= 0, false);
+    printBool(i >= 1, false);
+    printBool(i >= -1, false);
+    printBool(0 >= i, false);
+    printBool(1 >= i, false);
+    printBool(-1 >= i, false);
+    i = 1;
+    printBool(i >= 0, false);
+    printBool(i >= 1, false);
+    printBool(i >= -1, false);
+    printBool(0 >= i, false);
+    printBool(1 >= i, false);
+    printBool(-1 >= i, false);
+     i = -1;
+    printBool(i >= 0, false);
+    printBool(i >= 1, false);
+    printBool(i >= -1, false);
+    printBool(0 >= i, false);
+    printBool(1 >= i, false);
+    printBool(-1 >= i, true);
+ 
+    
+    # complex:  0 1 1 1 0 0 0 1 0 0 1 1
+    i = 1;
+    j = 2;
+    printBool(3 * i == j + 2, false);
+    printBool(3 * i != j + 2, false);
+    printBool(3 * i < j + 2, false);
+    printBool(3 * i <= j + 2, false);
+    printBool(3 * i > j + 2, false);
+    printBool(3 * i >= j + 2, false);
+    i = 2;
+    printBool(3 * i == j + 2, false);
+    printBool(3 * i != j + 2, false);
+    printBool(3 * i < j + 2, false);
+    printBool(3 * i <= j + 2, false);
+    printBool(3 * i > j + 2, false);
+    printBool(3 * i >= j + 2, true);
+
+    return 0;
+}

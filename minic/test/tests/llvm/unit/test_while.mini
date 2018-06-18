@@ -1,0 +1,75 @@
+
+fun printToThreshold(int threshold) void
+{
+    int i;
+    i = 0;
+    while (i < threshold)
+    {
+        print i;
+        i = i + 1;
+    }
+    print threshold endl;
+}
+
+fun findInRange(int start, int end, int value) int
+{
+    int i;
+    i = start;
+    while (i != end)
+    {
+        if (i == value) {
+            return i - start;
+        }
+        i = i + 1; 
+    }
+    return -1;
+}
+
+fun printRectangle(int width, int height, int value) void
+{
+    int i, j;
+
+    if (width < 0) {
+        return;
+    }
+
+    i = 0;
+    while (i < height) {
+        j = 0; 
+        while (j < width - 1) {
+            print value;
+            j =  j + 1;
+        }
+        print value endl;
+        i = i + 1;
+    }
+}
+
+
+# Expected output
+# 0
+# 0 1
+# 0 1 2 3 4 5 6 7 8 9 10
+# 0 5 10 -1
+# 0 0 0 0
+# 0 0 0 0
+# 0 0 0 0
+# 1000
+
+fun main() int
+{
+    printToThreshold(0); # no iterations
+    printToThreshold(1); # 1 iteration
+    printToThreshold(10); # 10 iterations
+
+    print findInRange(0, 11, 0); 
+    print findInRange(0, 11, 5); 
+    print findInRange(0, 11, 10); 
+    print findInRange(0, 11, 11) endl; 
+
+    printRectangle(4, 3, 0);
+    printRectangle(1, 1, 1000);
+
+    return 0;
+}
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+scp $1 vdinovi@unix3.csc.calpoly.edu:/home/vdinovi/431/tests/$2

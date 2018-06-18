@@ -1,0 +1,49 @@
+struct A
+{
+    int i;
+    struct A a;
+};
+
+# Expected output
+# struct: 1 2 3 4 
+# function: 10 20 30
+
+fun setStruct(struct A a) struct A {
+    a.i = 10;
+    return a;
+}
+
+fun main() int
+{
+    struct A a, x;
+    int i;
+    bool b;
+
+    # struct: 1 2 3 4
+    a = new A;
+    a.i = 1;
+    a.a = new A;
+    a.a.i = a.i + 1;
+    a.a.a = new A;
+    a.a.a.i = a.a.i + 1;
+    a.a.a.a = new A;
+    a.a.a.a.i = a.a.a.i + 1;
+    print a.i;
+    print a.a.i;
+    print a.a.a.i;
+    print a.a.a.a.i endl;
+
+
+    # function: 10 20 30
+    x = new A;
+    a.i = 0;
+    setStruct(a);
+    print a.i;
+    x = setStruct(x);
+    print a.i + x.i;
+    a.i = 0;
+    print setStruct(a).i + setStruct(x).i + a.i endl;
+
+    return 0;
+}
+

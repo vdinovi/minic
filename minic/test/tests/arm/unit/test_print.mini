@@ -1,0 +1,51 @@
+struct A 
+{
+    int x;
+    struct A a;
+};
+
+fun func() int
+{
+    return 256;
+}
+
+# Expected out
+# 1
+# 2
+# 3 4 5
+# 100
+# 256
+# -256
+
+fun main() int
+{
+    struct A x;
+    int i;
+    bool b;
+
+    # test endl and immediate
+    print 1 endl;
+    print 2 endl;
+    print 3;
+    print 4;
+    print 5 endl;
+
+    # test print member
+    x = new A;
+    x.a = new A;
+    x.a.x = 100;
+    print x.a.x endl;
+
+    # test print function
+    print func() endl;
+
+    # test print negative
+    i = -256;
+    print i endl;
+    
+    # test can't print bool (comment out)
+    # b = true;
+    # print b;
+
+    return 0;
+}

@@ -1,0 +1,79 @@
+struct A
+{
+    int i;
+};
+
+fun returnInt(int i) int
+{
+    return i;
+}
+
+fun returnBool(bool b) bool
+{
+    return b;
+}
+
+fun returnStruct(int i) struct A
+{
+    struct A a;
+    a = new A;
+    a.i = i;
+    return a; }
+
+fun returnNull() struct A
+{
+    return null;
+}
+
+
+fun printBool(bool b, bool lb) void
+{
+    if (b) {
+        if (lb) {
+            print 1 endl;
+        } else {
+            print 1;
+        }
+
+    } else {
+        if (lb) {
+            print 0 endl;
+        } else {
+            print 0;
+        }
+    }
+}
+
+# Expected output
+# 0 1 -1 1 0
+# 1 -2 3 -4
+# 1
+
+fun main() int
+{
+    struct A a;
+    int i;
+    bool b;
+
+    print returnInt(0);
+    print returnInt(1);
+    print returnInt(-1);
+    printBool(returnBool(true), false);
+    printBool(returnBool(false), true);
+    a = returnStruct(1);
+    print a.i;
+    a = returnStruct(-2);
+    print a.i;
+    a = returnStruct(3);
+    print a.i;
+    a = returnStruct(-4);
+    print a.i endl;
+    a = returnNull();
+    if (a == null) {
+        print 1 endl;
+    } else {
+        print 0 endl;
+    }
+
+    return 0;
+}

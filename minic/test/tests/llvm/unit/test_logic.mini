@@ -1,0 +1,121 @@
+fun printBool(bool b, bool nl) void {
+    if (b) {
+        if (nl) {
+            print 1 endl;
+        } else {
+            print 1;
+        }
+    } else {
+        if (nl) {
+            print 0 endl;
+
+        } else {
+            print 0;
+        }
+    }
+}
+
+
+#
+# Expected output
+# &c:   1 0 0 0
+# &cx:  1 1 0 0 0 0 0
+# &x:   1 0 0 0
+# |c:   1 1 1 0
+# |cx:  1 1 1 1 1 0 1 0
+# |x:   1 1 1 1 0 0 1 1
+# misc: 1 0 1 0
+
+
+fun main() int
+{
+    int x, y;
+    bool a, b, c;
+
+    # &c: 1 0 0 0
+    a = true && true;
+    printBool(a, false);
+    a = true && false;
+    printBool(a, false);
+    a = false && true;
+    printBool(a, false);
+    a = false && false;
+    printBool(a, true);
+
+    # &cx: 1 1 0 0 0 0 0
+    b = true;
+    a = b && true;
+    printBool(a, false);
+    a = true && b;
+    printBool(a, false);
+    a = b && false;
+    printBool(a, false);
+    a = false && b;
+    printBool(a, false);
+    b = false;
+    a = true && b;
+    printBool(a, false);
+    a = b && true;
+    printBool(a, false);
+    a = false && true;
+    printBool(a, true);
+
+    # &x - 1 0 0 0 
+    a = true;
+    b = true;
+    c = a && b;
+    printBool(c, false);
+    b = false;
+    c = a && b;
+    printBool(c, false);
+    a = false;
+    b = true;
+    c = a && b;
+    printBool(c, false);
+    b = false;
+    c = a && b;
+    printBool(c, true);
+
+    # |c:  1 1 1 0
+    printBool(true || true, false);
+    printBool(true || false, false);
+    printBool(false || true, false);
+    printBool(false || false, true);
+
+    # |cx: 1 1 1 1 1 0 1 0
+    a = true;
+    printBool(a || true, false);
+    printBool(a || false, false);
+    printBool(true || a, false);
+    printBool(false || a, false);
+    a = false;
+    printBool(a || true, false);
+    printBool(a || false, false);
+    printBool(true || a, false);
+    printBool(false || a, true);
+
+    # |x: 1 1 1 1 0 0 1 1
+    a = true;
+    b = true;
+    printBool(a || b, false);
+    printBool(b || a, false);
+    b = false;
+    printBool(a || b, false);
+    printBool(b || a, false);
+    a = false;
+    printBool(a || b, false);
+    printBool(b || a, false);
+    b = true;
+    printBool(a || b, false);
+    printBool(b || a, true);
+
+    # complex - 1 0 1 0
+    a = false;
+    printBool(false || false || !false, false);
+    printBool(false && a && !!a, false);
+    a = true;
+    printBool(a && a && !!true, false);
+    printBool(a && a && !a, true);
+
+    return 0;
+}

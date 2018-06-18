@@ -1,0 +1,141 @@
+#!/usr/bin/env ruby
+require "bundler/setup"
+require "pry"
+require "json"
+require "minic"
+require "optparse"
+require "open3"
+
+# Directory for the Java parser (this is required for compilation)
+PARSER_DIR = ENV["MINIC_PARSER"] || "./given_parser"
+# Directory for output files (see options below)
+OUT_DIR    = ENV["MINIC_OUTDIR"] || "."
+
+# colorized output
+def cputs(color, msg)
+  codes = {
+    red: 31,
+    green: 32,
+  }
+  puts "\e[#{codes[color]}m#{msg}\e[0m"
+end
+
+# Parse cmd-line options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: minic <options> <source files>"
+  opts.on("-oOUTFILE", "resulting assembly file, else will use the name of the input file") { |outfile| options[:outfile] = outfile }
+  opts.on("-pPARSEDIR", "directory of the provided Java AST parser (else uses $MINIC_PARSER)") { |parsedir| options[:parsedir] = parsedir }
+  opts.on("--stack", "Use stack-based llvm IR for code generation") { options[:stack] = true }
+  opts.on("--all", "produce all intermediate files") { options[:type_check] = options[:llvm] = options[:graph] = options[:no_alloc] = options[:if_graph] = "" }
+  opts.on("--type-check[=OUTFILE]", "write the typechecked ast in json format to file") { |outfile| options[:type_check] = outfile || "" }
+  opts.on("--llvm[=OUTFILE]", "write the program in llvm form to file") { |outfile| options[:llvm] = outfile || "" }
+  opts.on("--cfg[=OUTFILE]", "write the cfg in dot format to file") { |outfile| options[:cfg] = outfile || ""}
+  opts.on("--noalloc[=OUTFILE]", "write the assembly prior to register allocation") { |outfile| options[:no_alloc] = outfile || "" }
+  opts.on("--if-graph[=OUTFILE]", "write the interference graph in dot format to file") { |outfile| options[:if_graph] = outfile || ""}
+end.parse!
+
+# Requires at least one file
+if ARGV.empty?
+  puts "error: at least one input file is required"
+  exit
+end
+
+# Build the AST parser if needed
+parsedir = options[:parsedir]  || PARSER_DIR
+unless File.exists? "#{parsedir}/MiniCompiler.class"
+  puts "building parser..."
+  `make -C #{parsedir}`
+  if $?.exitstatus != 0
+    puts "error: failed to build parser"
+    exit
+  end
+end
+
+# Compile each input file
+ARGV.each do |infile|
+  unless File.exists? infile
+    cputs(:red, "file '#{infile}' not found")
+    next
+  end
+
+  # -- Parse --
+  input = File.read(infile)
+  parse_out = nil
+  parse_err = nil
+  parse_exit_status = nil
+  Open3.popen3("java MiniCompiler", chdir: parsedir) do |i,o,e,t|
+    i.write(input)
+    i.close_write
+    parse_out = o.read
+    parse_err = e.read
+    parse_exit_status = t.value
+  end
+  unless parse_err.empty? || parse_exit_status.to_i != 0
+    cputs(:red, "parse failed on file '#{infile}'")
+    puts("  #{parse_err}")
+    next
+  end
+
+
+  # -- Compile -- 
+  begin
+    puts "-> compiling #{infile}:"
+    base_outfile = infile.match(/^(.*\/)?(.*)\..*$/)[2]
+
+    # Type Check
+    checked = Minic::TypeChecker.new(JSON.parse(parse_out, symbolize_names: true))
+    if options[:type_check]
+      tc_outfile = options[:type_check] != "" ? options[:type_check] : base_outfile + ".json"
+      puts "-> writing type-checked ast to #{tc_outfile}"
+      File.open(tc_outfile, 'w') { |file| file.write(checked.to_json) }
+    end
+
+    # Generate CFG
+    cfg = Minic::CFG.generate(checked.to_h)
+    if options[:cfg]
+      cfg_outfile = options[:cfg] != "" ? options[:cfg] : base_outfile + "_cfg.dot"
+      puts "-> writing cfg to #{cfg_outfile}"
+      File.open(cfg_outfile, "w") { |file| file.write(cfg.to_dot) }
+    end
+
+    # Translate to LLVM
+    cfg.translate_to_llvm(options[:stack])
+    if options[:llvm]
+      llvm_outfile = options[:llvm] != "" ? options[:llvm] : base_outfile + ".ll"
+      puts "-> writing llvm to #{llvm_outfile}"
+      File.open(llvm_outfile, "w") { |file| file.write(cfg.to_llvm) }
+    end
+
+    # Translate to ARM
+    cfg.translate_to_arm
+    if options[:no_alloc]
+      no_alloc_outfile = options[:no_alloc] != "" ? options[:no_alloc] : base_outfile + "_no_alloc.s"
+      puts "-> writing  to #{no_alloc_outfile}"
+      File.open(no_alloc_outfile, "w") { |file| file.write(cfg.to_arm) }
+    end
+
+    # Generate interference graph
+    if_graph = cfg.interference_graph
+
+    # Allocate Registers
+    cfg.reg_alloc(if_graph)
+
+    if options[:if_graph]
+      if_graph_file = options[:if_graph] != "" ? options[:if_graph] : base_outfile + "_if_graph.dot"
+      puts "-> writing interference graph to #{if_graph_file}"
+      File.open(if_graph_file, "w") { |file| file.write(if_graph.to_dot) }
+    end
+
+    # Write final output
+    outfile = options[:outfile] || base_outfile + ".s"
+    puts "-> writing arm to #{outfile}"
+    File.open(outfile, "w") { |file| file.write(cfg.to_arm) }
+    cputs(:green, "successful compilation!\n")
+  rescue => ex
+    puts (ex.to_s + "\n\n")
+    ex.backtrace.each {|row| puts row }
+    next
+  end
+end
+

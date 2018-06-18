@@ -1,0 +1,16 @@
+#!/bin/bash
+file=$1
+dir=$(dirname $file)
+filename=$(basename "$file")
+input="$dir/input/$(basename "$file" .s).input"
+output="$dir/output/$(basename "$file" .s).output"
+if [ -f a.out ]; then
+    rm a.out
+fi
+clang -m32 $file
+./a.out <$input >result
+if diff -q result $output &>/dev/null; then
+    echo -e "--- OK --- Passed ${filename}"
+else
+    echo -e "-- FAIL -- Failed ${filename}"
+fi

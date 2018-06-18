@@ -1,0 +1,18 @@
+require "bundler/gem_tasks"
+require "rake/testtask"
+require "json"
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.libs << "lib"
+  t.libs << "lib/minic"
+  t.test_files = FileList['test/**/*_test.rb']
+end
+
+task :default => :test
+
+task :format_json, [:infile] do |t, args|
+  File.open(args.infile, 'r') do |file|
+    puts JSON.pretty_generate(JSON.parse(file.read()))
+  end
+end

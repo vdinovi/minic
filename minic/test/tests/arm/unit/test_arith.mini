@@ -1,0 +1,418 @@
+struct A {
+    int i;
+    struct A a;
+};
+
+# Expected output
+# c + c: 0 1 1 2 3 3
+# c - c: 0 -1 1 0 1 -1
+# c * c: 0 0 0 1 2 2
+# c / c: 0 0 1 2 0 3
+# x + c: 0 0 1 1 2 2 1 1 2 2 3 3
+# x - c: 0 0 -1 1 -2 2 1 -1 0 0 -1 1
+# x * c: 0 0 0 0 1 1 2 2 2 2 4 4
+# x / c: 0 1 1 2 0 1 1 0 1
+# x + x: 0 0 1 1 2 2 1 1 2 2 3 3 2 2 3 3 4 4
+# x - x: 0 0 1 -1 2 -2 -1 1 0 0 1 -1 -2 2 -1 1 0 0
+# x * x: 0 0 0 0 0 0 0 0 1 1 2 2 0 0 2 2 4 4
+# x / x: 0 0 0 1 1 0 2 0 0 2 1 1
+# complex: 3 3 0 -1 -1 0 2 1 0 2 0 0 6 34 18
+
+fun main() int {
+    struct A a;
+    int x, y, z;
+
+    # c + c: 0 1 1 2 3 3
+    x = 0 + 0;
+    print x;
+    x = 1 + 0;
+    print x;
+    x = 0 + 1;
+    print x;
+    x = 1 + 1;
+    print x;
+    x = 1 + 2;
+    print x;
+    x = 2 + 1;
+    print x endl;
+
+    # c - c: 0 -1 1 0 1 -1
+    x = 0 - 0;
+    print x;
+    x = 0 - 1;
+    print x;
+    x = 1 - 0;
+    print x;
+    x = 1 - 1;
+    print x;
+    x = 2 - 1;
+    print x;
+    x = 1 - 2;
+    print x endl;
+
+    # c * c: 0 0 0 1 2 2
+    x = 0 * 0;
+    print x;
+    x = 1 * 0;
+    print x;
+    x = 0 * 1;
+    print x;
+    x = 1 * 1;
+    print x;
+    x = 1 * 2;
+    print x;
+    x = 2 * 1;
+    print x endl;
+
+    # c / c: 0 1 2 0 3
+    x = 0 / 1;
+    print x;
+    x = 1 / 1;
+    print x;
+    x = 2 / 1;
+    print x;
+    x = 1 / 2;
+    print x;
+    x = 3 / 1;
+    print x endl;
+
+    # x + c: 0 0 1 1 2 2 1 1 2 2 3 3
+    y = 0;
+    x = y + 0;
+    print x;
+    x = 0 + y;
+    print x;
+    x = y + 1;
+    print x;
+    x = 1 + y;
+    print x;
+    x = y + 2;
+    print x;
+    x = 2 + y;
+    print x;
+    y = 1;
+    x = y + 0;
+    print x;
+    x = 0 + y;
+    print x;
+    x = y + 1;
+    print x;
+    x = 1 + y;
+    print x;
+    x = y + 2;
+    print x;
+    x = 2 + y;
+    print x endl;
+ 
+    # x - c: 0 0 -1 1 -2 2 1 -1 0 0 -1 1
+    y = 0;
+    x = y - 0;
+    print x;
+    x = 0 - y;
+    print x;
+    x = y - 1;
+    print x;
+    x = 1 - y;
+    print x;
+    x = y - 2;
+    print x;
+    x = 2 - y;
+    print x;
+    y = 1;
+    x = y - 0;
+    print x;
+    x = 0 - y;
+    print x;
+    x = y - 1;
+    print x;
+    x = 1 - y;
+    print x;
+    x = y - 2;
+    print x;
+    x = 2 - y;
+    print x endl;
+
+    # x * c: 0 0 0 0 1 1 2 2 2 2 4 4
+    y = 0;
+    x = y * 0;
+    print x;
+    x = 0 * y;
+    print x;
+    x = y * 1;
+    print x;
+    x = 1 * y;
+    print x;
+    y = 1;
+    x = y * 1;
+    print x;
+    x = 1 * y;
+    print x;
+    x = y * 2;
+    print x;
+    x = 2 * y;
+    print x;
+    y = 2;
+    x = y * 1;
+    print x;
+    x = 1 * y;
+    print x;
+    x = y * 2;
+    print x;
+    x = 2 * y;
+    print x endl;
+
+    # x / c: 0 1 1 2 0 1 1 0 1
+    y = 0;
+    x = y / 1;
+    print x;
+    y = 1;
+    x = y / 1;
+    print x;
+    x = 1 / y;
+    print x;
+    x = 2 / y;
+    print x;
+    x = y / 2;
+    print x;
+    y = 2;
+    x = y / 2;
+    print x;
+    x = 2 / y;
+    print x;
+    x = y / 3;
+    print x;
+    x = 3 / y;
+    print x endl;
+
+    # x + x: 0 0 1 1 2 2 1 1 2 2 3 3 2 2 3 3 4 4
+    z = 0;
+    y = 0;
+    x = y + z;
+    print x;
+    x = z + y;
+    print x;
+    y = 1;
+    x = y + z;
+    print x;
+    x = y + z;
+    print x;
+    y = 2;
+    x = y + z;
+    print x;
+    x = y + z;
+    print x;
+    z = 1;
+    y = 0;
+    x = y + z;
+    print x;
+    x = z + y;
+    print x;
+    y = 1;
+    x = y + z;
+    print x;
+    x = y + z;
+    print x;
+    y = 2;
+    x = y + z;
+    print x;
+    x = y + z;
+    print x;
+    z = 2;
+    y = 0;
+    x = y + z;
+    print x;
+    x = z + y;
+    print x;
+    y = 1;
+    x = y + z;
+    print x;
+    x = y + z;
+    print x;
+    y = 2;
+    x = y + z;
+    print x;
+    x = y + z;
+    print x endl;
+
+
+    # x - x: 0 0 1 -1 2 -2 -1 1 0 0 1 -1 -2 2 -1 1 0 0
+    z = 0;
+    y = 0;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    y = 1;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    y = 2;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    z = 1;
+    y = 0;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    y = 1;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    y = 2;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    z = 2;
+    y = 0;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    y = 1;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x;
+    y = 2;
+    x = y - z;
+    print x;
+    x = z - y;
+    print x endl;
+
+    # x * x: 0 0 0 0 0 0 0 0 1 1 2 2 0 0 2 2 4 4
+    z = 0;
+    y = 0;
+    x = z * y;
+    print x;
+    x = y * z;
+    print x;
+    y = 1;
+    x = z * y;
+    print x;
+    x = z * y;
+    print x;
+    y = 2;
+    x = z * y;
+    print x;
+    x = z * y;
+    print x;
+    z = 1;
+    y = 0;
+    x = z * y;
+    print x;
+    x = y * z;
+    print x;
+    y = 1;
+    x = z * y;
+    print x;
+    x = z * y;
+    print x;
+    y = 2;
+    x = z * y;
+    print x;
+    x = z * y;
+    print x;
+    z = 2;
+    y = 0;
+    x = z * y;
+    print x;
+    x = y * z;
+    print x;
+    y = 1;
+    x = z * y;
+    print x;
+    x = z * y;
+    print x;
+    y = 2;
+    x = z * y;
+    print x;
+    x = z * y;
+    print x endl;
+
+    # x / x: 0 0 0 1 1 0 2 0 0 2 1 1
+    z = 0;
+    y = 1;
+    x = z / y;
+    print x;
+    y = 2;
+    x = z / y;
+    print x;
+    z = 1;
+    y = 0;
+    x = y / z;
+    print x;
+    y = 1;
+    x = z / y;
+    print x;
+    x = y / z;
+    print x;
+    y = 2;
+    x = z / y;
+    print x;
+    x = y / z;
+    print y;
+    z = 2;
+    y = 0;
+    x = y / z;
+    print x;
+    y = 1;
+    x = y / z;
+    print x;
+    x = z / y;
+    print x;
+    y = 2;
+    x = y / z;
+    print x;
+    x = z / y;
+    print x endl;
+
+    # complex: 3 3 0 -1 -1 0 2 1 0 2 0 0 6 34 18
+    y = 1;
+    z = 1;
+    x = y + z + 1;
+    print x;
+    x = y + 1 + z;
+    print x;
+    x = 2 - y - z;
+    print x;
+    x = 1 - z - y;
+    print x;
+    x = y - y - y;
+    print x;
+    x = z + y - (z + y);
+    print x;
+    x = (y + z) / 1;
+    print x;
+    x = (y + z) / 2;
+    print x;
+    x = (y + z) / 3;
+    print x;
+    x = (2 * y + 2) / (2 * z);
+    print x;
+    x = (2 * y - 2) / (2 * z);
+    print x;
+    x = (2 * y - 2) / (4 * z);
+    print x;
+    y = 1;
+    x = y + 2 * y * y + 3 * y * y * y;
+    print x;
+    y = 2;
+    x = y + 2 * y * y + 3 * y * y * y;
+    print x;
+    x = y - 2 * y * y + 3 * y * y * y;
+    print x endl;
+
+
+    
+
+
+
+
+    return 0;
+}

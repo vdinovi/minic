@@ -1,0 +1,3 @@
+#!/bin/bash
+
+scp -r /Users/vito/431/minic/minic/test/tests/llvm/benchmarks/* vdinovi@pi2:/home/vdinovi/431/tests/llvm/benchmarks
